@@ -3,27 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Programação Linear - Método Matemático</title>
+  <title>Programação Linear - Métodos Matemático e Gráfico</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Programação Linear - Método Matemático</h1>
+  <h1>Programação Linear - Métodos Matemático e Gráfico</h1>
 
-  <label>Função Objetivo (ex: 3x + 5y)</label>
-  <input type="text" id="objetivo" placeholder="ex: 3x + 5y">
+  <div class="input-container">
+    <label>Função Objetivo (ex: 3x + 5y)</label>
+    <input type="text" id="objetivo" placeholder="ex: 3x + 5y">
 
-  <label>Restrições (uma por linha, ex: x + y <= 10)</label>
-  <textarea id="restricoes" rows="5" cols="30" placeholder="ex:\nx + y <= 10\nx >= 0\ny >= 0"></textarea>
+    <label>Restrições (uma por linha, ex: x + y <= 10)</label>
+    <textarea id="restricoes" rows="5" placeholder="ex:\nx + y <= 10\nx >= 0\ny >= 0"></textarea>
 
-  <label>Tipo de Problema:</label>
-  <select id="tipoProblema">
-    <option value="max">Maximizar</option>
-    <option value="min">Minimizar</option>
-  </select>
+    <label>Tipo de Problema:</label>
+    <select id="tipoProblema">
+      <option value="max">Maximizar</option>
+      <option value="min">Minimizar</option>
+    </select>
 
-  <button onclick="resolverPL()">Resolver</button>
+    <div class="button-group">
+      <button onclick="resolverPL()">Resolver Matematicamente</button>
+      <button onclick="resolverGrafico()">Resolver Graficamente</button>
+    </div>
+  </div>
 
   <div class="resultado" id="resultado"></div>
+
+  <div class="graph-container">
+    <canvas id="grafico" width="600" height="400"></canvas>
+  </div>
 
   <script src="script.js"></script>
 </body>
