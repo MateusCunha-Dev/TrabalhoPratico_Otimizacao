@@ -1,0 +1,71 @@
+body { 
+    font-family: Arial, sans-serif; 
+    padding: 20px; 
+    max-width: 800px; 
+    margin: 0 auto; 
+  }
+  
+  label, input, textarea, select { 
+    display: block; 
+    margin: 10px 0; 
+    width: 100%;
+  }
+  
+  input, textarea, select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  textarea {
+    height: 120px;
+    resize: vertical;
+  }
+  
+  button { 
+    padding: 10px 15px; 
+    background-color: #4CAF50; 
+    color: white; 
+    border: none; 
+    cursor: pointer; 
+    border-radius: 4px;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+  
+  button:hover { 
+    background-color: #146618; 
+  }
+  
+  .resultado { 
+    margin-top: 20px; 
+    padding: 15px;
+    background-color: #f8f8f8;
+    border-radius: 4px;
+    border-left: 4px solid #4CAF50;
+  }
+  
+  .error { 
+    color: #d32f2f;
+    border-left: 4px solid #d32f2f !important;
+  }
+  
+  .success { 
+    color: #388e3c; 
+  }
+  
+  h1 {
+    color: #2c3e50;
+    border-bottom: 2px solid #4CAF50;
+    padding-bottom: 10px;
+  }
+  
+  @media (max-width: 600px) {
+    body {
+      padding: 10px;
+    }
+    
+    h1 {
+      font-size: 24px;
+    }
+  }
