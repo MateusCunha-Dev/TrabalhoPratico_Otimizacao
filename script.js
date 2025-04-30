@@ -1,19 +1,66 @@
 // Cores para as restrições no gráfico
 const COLORS = ['#FF5722', '#4CAF50', '#2196F3', '#9C27B0', '#FFC107', '#795548'];
 
-/* ========== FUNÇÕES DE PARSE/ANÁLISE ========== */
+/* ========== FUNÇÕES DE INTERFACE ========== */
 
-// Função para parsear uma restrição em partes componentes
-function parseRestricao(str) {
-  const match = str.match(/([-+*/xXyY0-9 .]+)(<=|>=|=|<|>)(.+)/);
-  if (!match) return null;
+// Função para adicionar novas restrições
+function adicionarRestricao(expressao = '', operador = '<=', valor = '') {
+  const container = document.getElementById('restricoes-container');
+  const div = document.createElement('div');
+  div.className = 'restricao-item';
   
-  return {
-    lhs: match[1].trim(),
-    op: match[2],
-    rhs: parseFloat(match[3].trim())
-  };
+  div.innerHTML = `
+    <input type="text" class="restricao-expr" placeholder="ex: x + 2y" value="${expressao}">
+    <select class="restricao-op">
+      <option value="<=" ${operador === '<=' ? 'selected' : ''}>≤</option>
+      <option value=">=" ${operador === '>=' ? 'selected' : ''}>≥</option>
+      <option value="=" ${operador === '=' ? 'selected' : ''}>=</option>
+      <option value="<" ${operador === '<' ? 'selected' : ''}><</option>
+      <option value=">" ${operador === '>' ? 'selected' : ''}>></option>
+    </select>
+    <input type="number" class="restricao-valor" placeholder="valor" value="${valor}">
+    <button onclick="this.parentElement.remove()">Remover</button>
+  `;
+  
+  container.appendChild(div);
 }
+
+// Função para obter todas as restrições
+function obterRestricoes() {
+  const restricoes = [];
+  const itens = document.querySelectorAll('.restricao-item');
+  
+  itens.forEach(item => {
+    const expr = item.querySelector('.restricao-expr').value.trim();
+    const op = item.querySelector('.restricao-op').value;
+    const valor = item.querySelector('.restricao-valor').value;
+    
+    if (expr && valor) {
+      restricoes.push({
+        lhs: expr,
+        op: op,
+        rhs: parseFloat(valor)
+      });
+    }
+  });
+  
+  return restricoes;
+}
+
+// Carrega um exemplo pré-definido
+function carregarExemplo() {
+  document.getElementById('objetivo').value = '3x + 5y';
+  
+  const container = document.getElementById('restricoes-container');
+  container.innerHTML = '';
+  
+  adicionarRestricao('x + y', '<=', '10');
+  adicionarRestricao('2x + y', '<=', '16');
+  adicionarRestricao('x', '>=', '0');
+  adicionarRestricao('y', '>=', '0');
+}
+
+/* ========== FUNÇÕES DE PARSE/ANÁLISE ========== */
 
 // Função para extrair coeficientes de uma expressão linear
 function extrairCoeficientes(expr) {
@@ -55,7 +102,7 @@ function pontoValido(x, y, restricoes) {
 
 /* ========== FUNÇÕES DE CÁLCULO ========== */
 
-// Encontra todos os vértices viáveis do problema (VERSÃO MELHORADA)
+// Encontra todos os vértices viáveis do problema
 function encontrarVertices(restricoes) {
   let vertices = [];
   
@@ -109,18 +156,6 @@ function encontrarVertices(restricoes) {
       }
     }
   }
-  
-  // 4. Adiciona pontos nos limites do gráfico quando o problema é ilimitado
-  const pontosExtras = [
-    { x: 0, y: 15 }, { x: 15, y: 0 }, { x: 15, y: 15 }
-  ];
-  
-  pontosExtras.forEach(p => {
-    if (pontoValido(p.x, p.y, restricoes) && 
-        !vertices.some(v => Math.abs(v.x - p.x) < 1e-6 && Math.abs(v.y - p.y) < 1e-6)) {
-      vertices.push(p);
-    }
-  });
 
   // Remove vértices duplicados
   return vertices.filter((v, i) => 
@@ -132,7 +167,7 @@ function encontrarVertices(restricoes) {
 
 /* ========== FUNÇÕES DE DESENHO DO GRÁFICO ========== */
 
-// Desenha o gráfico com as restrições e solução (VERSÃO MELHORADA)
+// Desenha o gráfico com as restrições e solução
 function desenharGrafico(objetivo, restricoes, solucao) {
   const canvas = document.getElementById('grafico');
   const ctx = canvas.getContext('2d');
@@ -216,7 +251,7 @@ function desenharGrafico(objetivo, restricoes, solucao) {
     ctx.stroke();
   });
 
-  // Desenhar região viável - VERSÃO MELHORADA
+  // Desenhar região viável
   const vertices = encontrarVertices(restricoes);
   
   if (vertices.length > 0) {
@@ -304,43 +339,27 @@ function atualizarLegenda(restricoes) {
 function resolverPL() {
   try {
     const objetivoStr = document.getElementById('objetivo').value;
-    const restricoesStr = document.getElementById('restricoes').value;
     const tipoProblema = document.getElementById('tipoProblema').value;
+    const restricoes = obterRestricoes();
     
-    // Validação básica
     if (!objetivoStr.trim()) {
       throw new Error("Por favor, informe a função objetivo.");
     }
 
     const objetivo = extrairCoeficientes(objetivoStr);
     
-    // Garante que os coeficientes são números válidos
     if (isNaN(objetivo.x)) objetivo.x = 0;
     if (isNaN(objetivo.y)) objetivo.y = 0;
     
-    // Processa as restrições
-    let restricoes = restricoesStr.split('\n')
-      .map(line => line.trim())
-      .filter(line => line)
-      .map(parseRestricao)
-      .filter(r => r);
-    
-    // Adiciona restrições de não-negatividade se não existirem
-    if (!restricoes.some(r => r.lhs.includes('x') && r.op === '>=')) {
-      restricoes.push({ lhs: 'x', op: '>=', rhs: 0 });
-    }
-    if (!restricoes.some(r => r.lhs.includes('y') && r.op === '>=')) {
-      restricoes.push({ lhs: 'y', op: '>=', rhs: 0 });
+    if (restricoes.length === 0) {
+      throw new Error("Por favor, adicione pelo menos uma restrição.");
     }
     
-    // Encontra todos os vértices viáveis
     const vertices = encontrarVertices(restricoes);
     
-    // Verifica se há solução viável
     if (vertices.length === 0) {
       let temSolucao = false;
       
-      // Testa pontos distantes para ver se o problema é ilimitado
       if (pontoValido(1e6, 0, restricoes)) temSolucao = true;
       if (pontoValido(0, 1e6, restricoes)) temSolucao = true;
       if (pontoValido(1e6, 1e6, restricoes)) temSolucao = true;
@@ -355,7 +374,7 @@ function resolverPL() {
       return;
     }
     
-    // Encontra a solução ótima
+    // Encontra solução ótima
     let melhorValor = tipoProblema === 'max' ? -Infinity : Infinity;
     let pontoOtimo = null;
     
@@ -369,7 +388,7 @@ function resolverPL() {
       }
     });
     
-    // Exibe o resultado
+    // Exibe resultado
     document.getElementById('resultado').innerHTML = `
       <strong class="success">Solução ótima encontrada:</strong><br><br>
       <strong>Valores das variáveis:</strong><br>
@@ -380,7 +399,6 @@ function resolverPL() {
       <strong>Número de vértices analisados:</strong> ${vertices.length}
     `;
     
-    // Desenha o gráfico também
     desenharGrafico(objetivo, restricoes, pontoOtimo);
     
   } catch (error) {
@@ -393,8 +411,8 @@ function resolverPL() {
 function resolverGrafico() {
   try {
     const objetivoStr = document.getElementById('objetivo').value;
-    const restricoesStr = document.getElementById('restricoes').value;
     const tipoProblema = document.getElementById('tipoProblema').value;
+    const restricoes = obterRestricoes();
     
     if (!objetivoStr.trim()) {
       throw new Error("Por favor, informe a função objetivo.");
@@ -405,21 +423,10 @@ function resolverGrafico() {
     if (isNaN(objetivo.x)) objetivo.x = 0;
     if (isNaN(objetivo.y)) objetivo.y = 0;
     
-    let restricoes = restricoesStr.split('\n')
-      .map(line => line.trim())
-      .filter(line => line)
-      .map(parseRestricao)
-      .filter(r => r);
-    
-    // Adiciona restrições de não-negatividade
-    if (!restricoes.some(r => r.lhs.includes('x') && r.op === '>=')) {
-      restricoes.push({ lhs: 'x', op: '>=', rhs: 0 });
-    }
-    if (!restricoes.some(r => r.lhs.includes('y') && r.op === '>=')) {
-      restricoes.push({ lhs: 'y', op: '>=', rhs: 0 });
+    if (restricoes.length === 0) {
+      throw new Error("Por favor, adicione pelo menos uma restrição.");
     }
     
-    // Encontra vértices
     const vertices = encontrarVertices(restricoes);
     
     // Encontra solução ótima
@@ -461,19 +468,16 @@ function resolverGrafico() {
   }
 }
 
-// Carrega um exemplo pré-definido
-function carregarExemplo() {
-  document.getElementById('objetivo').value = '3x + 5y';
-  document.getElementById('restricoes').value = 'x + y <= 10\n2x + y <= 16\nx >= 0\ny >= 0';
-  document.getElementById('tipoProblema').value = 'max';
-}
-
-// Adiciona evento para o botão de exemplo
+// Inicializa a interface quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', function() {
+  // Adiciona uma restrição vazia inicial
+  adicionarRestricao();
+  
+  // Adiciona botão de exemplo
   const exemploBtn = document.createElement('button');
   exemploBtn.textContent = 'Carregar Exemplo';
   exemploBtn.onclick = carregarExemplo;
-  exemploBtn.style.marginTop = '10px';
   exemploBtn.style.backgroundColor = '#FF9800';
+  exemploBtn.style.marginTop = '10px';
   document.querySelector('.input-container').appendChild(exemploBtn);
 });

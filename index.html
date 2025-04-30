@@ -13,8 +13,11 @@
     <label>Função Objetivo (ex: 3x + 5y)</label>
     <input type="text" id="objetivo" placeholder="ex: 3x + 5y">
 
-    <label>Restrições (uma por linha, ex: x + y <= 10)</label>
-    <textarea id="restricoes" rows="5" placeholder="ex:\nx + y <= 10\nx >= 0\ny >= 0"></textarea>
+    <label>Restrições</label>
+    <div id="restricoes-container">
+      <!-- Restrições serão adicionadas aqui dinamicamente -->
+    </div>
+    <button onclick="adicionarRestricao()">Adicionar Restrição</button>
 
     <label>Tipo de Problema:</label>
     <select id="tipoProblema">
