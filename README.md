@@ -4,7 +4,7 @@
 
 Este projeto implementa uma ferramenta interativa para resolver problemas de Programação Linear utilizando tanto o método matemático (analítico) quanto o método gráfico.
 
-![Interface do Programa](Print-1.png)
+![Interface do Programa](imagens/Print-1.png)
 
 ## ✨ Funcionalidades Principais
 
@@ -19,7 +19,7 @@ Este projeto implementa uma ferramenta interativa para resolver problemas de Pro
 
 ## 📊 Exemplo de Saída
 
-![Solução Matemática](Print-2.png)
+![Solução Matemática](imagens/Print-2.png)
 
 ## 🛠️ Tecnologias Utilizadas
 
