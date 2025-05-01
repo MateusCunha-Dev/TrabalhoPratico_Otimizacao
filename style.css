@@ -7,6 +7,7 @@ body {
   background-color: #f5f5f5;
 }
 
+
 .input-container {
   background-color: #fff;
   padding: 20px;
@@ -22,20 +23,29 @@ label {
   color: #333;
 }
 
-input, select {
+input, textarea, select {
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 16px;
   box-sizing: border-box;
-  margin-bottom: 10px;
+}
+
+textarea {
+  height: 120px;
+  resize: vertical;
+  font-family: monospace;
 }
 
 .button-group {
   display: flex;
   gap: 10px;
   margin-top: 25px;
+}
+
+.btn-resolver-graficamente{
+  background-color: #2196F3;
 }
 
 button {
@@ -116,36 +126,6 @@ h1 {
   border-radius: 3px;
 }
 
-/* Estilos para as restrições */
-.restricao-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.restricao-item input {
-  flex: 1;
-  padding: 8px;
-  margin-bottom: 0;
-}
-
-.restricao-item select {
-  padding: 8px;
-  width: auto;
-  margin-bottom: 0;
-}
-
-.restricao-item button {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 12px;
-  cursor: pointer;
-  flex: none;
-}
-
 @media (max-width: 600px) {
   body {
     padding: 10px;
@@ -155,8 +135,51 @@ h1 {
     flex-direction: column;
   }
   
-  .restricao-item {
-    flex-direction: column;
-    align-items: stretch;
+  button {
+    width: 100%;
   }
+}
+  
+.objective-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.objective-input input {
+  width: 80px;
+  flex: none;
+}
+
+.objective-input span {
+  white-space: nowrap;
+}
+
+.constraint-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.constraint-input input {
+  width: 80px;
+  flex: none;
+}
+
+.constraint-input span {
+  white-space: nowrap;
+}
+
+.btn-add {
+  background-color: #4CAF50 !important;
+  margin-bottom: 15px;
+}
+
+.restricao-item button {
+  background-color: #f44336 !important;
+}
+
+.btn-example {
+  background-color: #FF9800 !important;
 }

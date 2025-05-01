@@ -7,35 +7,35 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Programação Linear - Métodos Matemático e Gráfico</h1>
 
-  <div class="input-container">
-    <label>Função Objetivo (ex: 3x + 5y)</label>
-    <input type="text" id="objetivo" placeholder="ex: 3x + 5y">
-
-    <label>Restrições</label>
-    <div id="restricoes-container">
-      <!-- Restrições serão adicionadas aqui dinamicamente -->
+    <h1>Programação Linear - Métodos Matemático e Gráfico</h1>
+    <div class="input-container">
+      <label>Função Objetivo</label>
+      <div class="objective-input">
+        <input type="number" id="obj-x" placeholder="Coeficiente" step="any">
+        <span>x +</span>
+        <input type="number" id="obj-y" placeholder="Coeficiente" step="any">
+        <span>y</span>
+      </div>
+      <label>Restrições</label>
+      <div id="restricoes-container">
+      </div>
+      <button onclick="adicionarRestricao()" class="btn-add">Adicionar Restrição</button>
+      <label>Tipo de Problema:</label>
+      <select id="tipoProblema">
+        <option value="max">Maximizar</option>
+        <option value="min">Minimizar</option>
+      </select>
+      <div class="button-group">
+        <button style="background-color: blueviolet;" onclick="resolverPL()">Resolver Matematicamente</button>
+        <button class="btn-resolver-graficamente" onclick="resolverGrafico()">Resolver Graficamente</button>
+        <button onclick="carregarExemplo()" class="btn-example">Carregar Exemplo</button>
+      </div>
     </div>
-    <button onclick="adicionarRestricao()">Adicionar Restrição</button>
-
-    <label>Tipo de Problema:</label>
-    <select id="tipoProblema">
-      <option value="max">Maximizar</option>
-      <option value="min">Minimizar</option>
-    </select>
-
-    <div class="button-group">
-      <button onclick="resolverPL()">Resolver Matematicamente</button>
-      <button onclick="resolverGrafico()">Resolver Graficamente</button>
+    <div class="resultado" id="resultado"></div>
+    <div class="graph-container">
+      <canvas id="grafico" width="600" height="400"></canvas>
     </div>
-  </div>
-
-  <div class="resultado" id="resultado"></div>
-
-  <div class="graph-container">
-    <canvas id="grafico" width="600" height="400"></canvas>
-  </div>
 
   <script src="script.js"></script>
 </body>
